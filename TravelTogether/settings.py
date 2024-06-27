@@ -71,6 +71,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MIDDLEWARE = [
