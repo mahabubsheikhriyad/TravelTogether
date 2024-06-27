@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile - TravelTogether{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <img style="height: 400px" src="{% if user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'default_profile_picture.png' %}{% endif %}" class="card-img-top" alt="profile picture">
+            <div class="card-body">
+                <h5 class="card-title">{{ user.profile.name }}</h5>
+                <P class="card-text">Username: {{ user.username }}</P>
+                <p class="card-text">{{ user.profile.bio }}</p>
+                <p class="card-text"><strong>Your balance:</strong> {{ user.profile.balance }} Taka</p>
+                <p class="card-text"><strong>Total Donated:</strong> {{ total_donated }} Taka</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">Update Profile</div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ p_form.as_p }}
+                    <button type="submit" class="btn btn-dark" name="profile_form">Save Changes</button>
+                </form>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">Create Offer</div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ offer_form.as_p }}
+                    <button type="submit" class="btn btn-dark" name="offer_form">Post Offer</button>
+                </form>
+            </div>
+        </div>
+        <h3>Badges</h3>
+        <div class="row">
+            {% for badge in badges %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        {% if badge.image %}
+                            <img src="{{ badge.image.url }}" class="card-img-top" alt="{{ badge.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ badge.name }}</h5>
+                            <p class="card-text">{{ badge.description }}</p>
+                            <p class="card-text"><span class="badge badge-{{ badge.tier|lower }}">{{ badge.tier }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">Donation History</div>
+            <ul class="list-group list-group-flush">
+                {% for donation in donations %}
+                <li class="list-group-item">
+                    Donated {{ donation.amount }} Taka to <a href="{% url 'offer_detail' donation.offer.id %}">{{ donation.offer.destination }}</a> on {{ donation.created_at|date:"M d, Y, h:i A" }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">Manage Offers</div>
+            <ul class="list-group list-group-flush">
+                {% for offer in user.offer_set.all %}
+                    <li class="list-group-item">
+                        {{ offer.destination }} - {{ offer.description }}
+                        {% if offer.image %}
+                            <img src="{{ offer.image.url }}" class="img-thumbnail" alt="Offer image" style="max-width: 100px;">
+                        {% endif %}
+                        <a href="{% url 'delete_offer' offer.id %}" class="btn btn-sm btn-dark">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">Deposit Funds</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ d_form.as_p }}
+                    <button type="submit" class="btn btn-primary" name="deposit_form">Deposit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

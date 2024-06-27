@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sign Up - TravelTogether{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load socialaccount %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>Sign Up</h2>
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'account_login' %}">Login</a></p>
+        <a href="{% provider_login_url 'google' %}?next={{ next }}" class="btn" style="background-color: #e3e3e3">
+            <img src="{% static 'google.webp' %}" style="height: 30px"> Login with Google
+        </a>
+    </div>
+</div>
+{% endblock %}

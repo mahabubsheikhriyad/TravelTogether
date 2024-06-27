@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home - TravelTogether{% endblock %}
+{% block content %}
+
+<div class="container mt-1">
+    <h2>Offers Listing</h2>
+    <form method="GET" action="{% url 'home' %}" class="mb-3">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search by destination" name="destination" value="{{ request.GET.destination }}">
+            <input type="date" class="form-control" name="travel_date" value="{{ request.GET.travel_date }}">
+            <button type="submit" class="btn btn-dark">Apply Filters</button>
+        </div>
+    </form>
+    <div class="container mt-5">
+        <div class="row">
+        {% for offer in offers %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="d-flex align-items-center m-2">
+                        <a href="{% url 'view_profile' offer.user.id %}" class="d-flex align-items-center text-decoration-none text-dark">
+                        <img src="{{ offer.user.profile.profile_picture.url }}" alt="{{ offer.user.profile.name }}" class="rounded-circle" style="height: 40px; margin-right: 10px">
+                        <div>
+                            <h6 class="mb-0">{{ offer.user.profile.name }}</h6>
+                            <small class="text-muted">Posted by</small>
+                        </div>
+                        </a>
+                    </div>
+                    {% if offer.image %}
+                    <a href="{% url 'offer_detail' offer.id %}">
+                        <img src="{{ offer.image.url }}" class="card-img-top" alt="{{ offer.destination }}"></a>
+                    {% endif %}
+                    <div class="card-body">
+                        <a href="{% url 'offer_detail' offer.id %}" class="lign-items-center text-decoration-none text-dark">
+                        <h5 class="card-title">{{ offer.destination }}</h5>
+                        <p class="card-text">{{ offer.description }}</p></a>
+                        <div class="progress my-3">
+                            <div class="progress-bar" role="progressbar" style="width: {{ offer.progress_percentage }}%;
+                            {% if offer.progress_percentage < 30 %}
+                                   background-color: red;
+                            {% elif offer.progress_percentage < 70 %}
+                                background-color: yellow;
+                            {% else %}
+                                background-color: green;
+                            {% endif %}"
+                                 aria-valuenow="{{ offer.amount_collected }}" aria-valuemin="0" aria-valuemax="{{ offer.target_amount }}"></div>
+                        </div>
+                        <p class="card-text">Collected: {{ offer.amount_collected }} / {{ offer.target_amount }}</p>
+                        <h6>Top Donors:</h6>
+                        <ul class="list-group mb-3">
+                            {% for donor in offer.top_donors %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'view_profile' donor.user.id %}" class="d-flex align-items-center text-decoration-none">
+                                        <img src="{{ donor.user.profile.profile_picture.url }}" alt="{{ donor.user.username }}" class="rounded-circle" style="height: 40px;margin-right: 10px">
+                                        <div>
+                                            <strong class="text-dark">{{ donor.user.profile.name }}</strong>
+                                            <small class="d-block text-muted">{{ donor.amount }}TK</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'donate' offer.id %}" class="btn btn-success">Donate</a>
+                        <a href="{% url 'offer_detail' offer.id %}" class="btn btn-secondary">View Details</a>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if offers.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ offers.previous_page_number }}">{{ offers.previous_page_number }}</a></li>
+            {% endif %}
+            <li class="page-item active"><a class="page-link" href="?page={{ offers.number }}">{{ offers.number }}</a></li>
+            {% if offers.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ offers.next_page_number }}">{{ offers.next_page_number }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ offers.paginator.num_pages }}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</div>
+{% endblock %}

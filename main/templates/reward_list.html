@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Rewards{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Rewards</h2>
+    <p>You have {{ user_profile.points }} points.</p>
+    <div class="row">
+        {% for reward in rewards %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ reward.name }}</h5>
+                        <p class="card-text">{{ reward.description }}</p>
+                        <p class="card-text">Points required: {{ reward.points_required }}</p>
+                        {% if user_profile.points >= reward.points_required %}
+                            <a href="{% url 'claim_reward' reward.id %}" class="btn btn-success">Claim</a>
+                        {% else %}
+                            <button class="btn btn-secondary" disabled>Not enough points</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

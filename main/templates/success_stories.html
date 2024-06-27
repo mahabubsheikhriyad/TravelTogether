@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Success Stories{% endblock %}
+
+{% block content %}
+<style>
+
+    @media (max-width: 768px) {
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        .card-text {
+            font-size: 0.875rem;
+        }
+    }
+</style>
+<div class="container mt-5">
+    <h2>Success Stories</h2>
+
+    <!-- Upload Success Story Form -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h3>Upload Your Success Story</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_title">Title</label>
+                    {{ form.title }}
+                </div>
+                <div class="form-group">
+                    <label for="id_content">Content</label>
+                    {{ form.content }}
+                </div>
+                <div class="form-group my-3">
+                    <label for="id_image">Image</label>
+                    {{ form.image }}
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Display Success Stories -->
+    <div class="row">
+        {% for story in success_stories %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="d-flex align-items-center m-2">
+                    <a href="{% url 'view_profile' story.user.id %}" class="d-flex align-items-center text-decoration-none text-dark">
+                        <img src="{{ story.user.profile.profile_picture.url }}" alt="{{ story.user.profile.name }}" class="rounded-circle" style="height: 40px; margin-right: 10px">
+                            <div>
+                                <h6 class="mb-0">{{ story.user.profile.name }}</h6>
+                                <small class="text-muted">Posted by</small>
+                            </div>
+                    </a>
+                </div>
+                {% if story.image %}
+                <img src="{{ story.image.url }}" class="card-img-top" alt="Story Image">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ story.title }}</h5>
+                    <p class="card-text">{{ story.content }}</p>
+                    <p class="text-muted">by {{ story.user.username }} on {{ story.created_at|date:"F d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

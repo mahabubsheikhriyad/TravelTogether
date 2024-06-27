@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Leaderboard</h2>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Donated</th>
+                    <th scope="col">Badge</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for donor in leaderboard %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                        <a href="{% url 'view_profile' donor.user.id %}" class="d-flex align-items-center text-decoration-none text-dark">
+                            {% if donor.user.profile.profile_picture %}
+                            <img src="{{ donor.user.profile.profile_picture.url }}" class="rounded-circle mx-2" style="height: 40px;">
+                            {% endif %}
+                            <span>{{ donor.user.profile.name }}</span>
+                        </a>
+                    </td>
+                    <td><strong>{{ donor.total_amount }}</strong> Taka</td>
+                    <td class="d-flex align-items-center">
+                        {% if donor.highest_badge %}
+                        <img src="{{ donor.highest_badge.image.url }}" alt="{{ donor.highest_badge.name }}" style="height: 30px;">
+                        <span class="mx-2">{{ donor.highest_badge.name }}</span>
+                        {% else %}
+                        <span>No Badge</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
