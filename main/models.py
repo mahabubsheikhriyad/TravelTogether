@@ -47,15 +47,22 @@ class Profile(models.Model):
             'Platinum': 500000,
         }
 
+        current_badges = self.badges.all()
+        current_badge_tiers = set(current_badges.values_list('tier', flat=True))
+
         for tier, amount in thresholds.items():
             if total_donations >= amount:
-                badge, created = Badge.objects.get_or_create(tier=tier)
-                self.badges.add(badge)
+                if tier not in current_badge_tiers:
+                    badge, created = Badge.objects.get_or_create(tier=tier)
+                    self.badges.add(badge)
             else:
-                badge, created = Badge.objects.get_or_create(tier=tier)
-                self.badges.remove(badge)
+                if tier in current_badge_tiers:
+                    badge = Badge.objects.get(tier=tier)
+                    self.badges.remove(badge)
+
     def __str__(self):
         return self.user.username
+
 
 class Offer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
