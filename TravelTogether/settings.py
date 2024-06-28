@@ -62,7 +62,12 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         },
-
+        'OAUTH_PKCE_ENABLED': True,
+        'APP': {
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
+            'key': '',
+        }
     }
 }
 
@@ -111,7 +116,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'TravelTogether.wsgi.application'
 
-# Default SQLite database for development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -119,10 +123,10 @@ DATABASES = {
     }
 }
 
-# Parse database configuration from $DATABASE_URL for production
 DATABASE_URL = config('DATABASE_URL', default=None)
 if DATABASE_URL:
     DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
