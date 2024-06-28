@@ -1,12 +1,9 @@
-# main/authentication.py
-
 import jwt
-from jwt import PyJWTError
+from jwt.exceptions import PyJWTError
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
 User = get_user_model()
-
 
 class JWTAuthenticationBackend:
     def authenticate(self, request, token=None):

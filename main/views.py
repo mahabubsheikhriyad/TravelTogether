@@ -21,8 +21,10 @@ def some_view(request):
     if user is not None:
         login(request, user)
         # Authentication successful, proceed with your logic
+        return JsonResponse({'message': 'User authenticated', 'user': user.username})
     else:
-        print('Authentication failed or token invalid, handle accordingly')
+        # Authentication failed or token invalid, handle accordingly
+        return JsonResponse({'message': 'Authentication failed'}, status=401)
 
 def home(request):
     offers = Offer.objects.all()
