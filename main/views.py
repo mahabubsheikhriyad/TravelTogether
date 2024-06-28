@@ -9,6 +9,20 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
+from django.contrib.auth import authenticate, login
+from .authentication import JWTAuthenticationBackend
+
+
+def some_view(request):
+    token = request.headers.get('Authorization').split(' ')[1]  # Assuming token is in 'Bearer <token>' format
+    backend = JWTAuthenticationBackend()
+    user = backend.authenticate(request, token=token)
+
+    if user is not None:
+        login(request, user)
+        # Authentication successful, proceed with your logic
+    else:
+        print('Authentication failed or token invalid, handle accordingly')
 
 def home(request):
     offers = Offer.objects.all()

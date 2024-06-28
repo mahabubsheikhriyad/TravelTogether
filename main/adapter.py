@@ -1,8 +1,11 @@
-# your_app/adapters.py
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.exceptions import ImmediateHttpResponse
 from django.shortcuts import redirect
-from .models import User
+from django.contrib.auth import get_user_model
+import jwt
+from jwt import PyJWTError
+
+User = get_user_model()
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
@@ -15,11 +18,14 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         if sociallogin.is_existing:
             return
 
-        try:
-            email = sociallogin.account.extra_data['email']
-            user = User.objects.get(email=email)
-            sociallogin.connect(request, user)
-            raise ImmediateHttpResponse(redirect('/'))
-        except User.DoesNotExist:
-            pass
+        # Get the email from the social account
+        email = sociallogin.account.extra_data.get('email')
 
+        # If the email is present, try to find the user and connect the social account
+        if email:
+            try:
+                user = User.objects.get(email=email)
+                sociallogin.connect(request, user)
+                raise ImmediateHttpResponse(redirect('/'))
+            except User.DoesNotExist:
+                pass

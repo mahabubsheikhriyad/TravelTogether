@@ -36,7 +36,7 @@ INSTALLED_APPS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    'main.authentication.JWTAuthenticationBackend',
 )
 
 SITE_ID = 6
@@ -79,11 +79,12 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'main.middleware.JWTAuthenticationMiddleware',
 ]
 MESSAGE_TAGS = {
     message_constants.DEBUG: 'debug',
@@ -95,6 +96,7 @@ MESSAGE_TAGS = {
 
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 
 ROOT_URLCONF = 'TravelTogether.urls'
 
@@ -123,10 +125,7 @@ DATABASES = {
     }
 }
 
-DATABASE_URL = config('DATABASE_URL', default=None)
-if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
-
+DATABASES['default'] = dj_database_url.parse(config('DATABASE_URL'))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
