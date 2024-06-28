@@ -10,7 +10,6 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
 
-
 def home(request):
     offers = Offer.objects.all()
 

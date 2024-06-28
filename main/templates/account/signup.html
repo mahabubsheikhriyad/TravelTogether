@@ -1,22 +1,31 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Sign Up - TravelTogether{% endblock %}
+{% load socialaccount %}
+
+{% block title %}Login - TravelTogether{% endblock %}
 
 {% block content %}
-{% load static %}
 {% load socialaccount %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2>Sign Up</h2>
-        <form method="post" action="{% url 'account_signup' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="{% url 'account_login' %}">Login</a></p>
-        <a href="{% provider_login_url 'google' %}?next={{ next }}" class="btn" style="background-color: #e3e3e3">
-            <img src="{% static 'google.webp' %}" style="height: 30px"> Login with Google
-        </a>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mt-5">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Login to TravelTogether</h3>
+                        <a href="{% provider_login_url 'google' %}" style="background-color: white" class="btn mt-3">
+                            <img src="{% static 'google.webp' %}" alt="Google Login" style="width: 20px; margin-right: 10px;"> Login with Google
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+<footer class="footer mt-auto py-2 bg-light text-center">
+    <div class="container">
+        <span class="text-muted">&copy; 2024 TravelTogether</span><br>
+        <span class="text-muted">Made by <a href="https://www.facebook.com/mahabub.sheikh.13" target="_blank">Mahabub Sheikh</a></span>
+    </div>
+</footer>
+
 {% endblock %}
